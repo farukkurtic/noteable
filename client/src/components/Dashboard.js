@@ -9,12 +9,16 @@ import Note from "./Note";
 import NoNotes from "./NoNotes";
 import Footer from "./Footer";
 
-export default function Dashboard() {
+import { useAppContext } from "../AppContext";
+
+export default function Dashboard(props) {
   const [selectedNote, setSelectedNote] = useState({id: null, title: "", content: ""});
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [cookies] = useCookies(["userID"]);
   const userId = cookies.userID;
+
+  const { searchParam } = useAppContext();
 
   const [userData, setUserData] = useState();
   useEffect(function () {
@@ -71,12 +75,21 @@ export default function Dashboard() {
     setSelectedNote(updatedNote);
   }
 
+  const filteredNotes = userData?.notes.filter(function(note) {
+    const title = note.title ? note.title.toLowerCase() : ""; // Check if note.title is defined
+    const content = note.content ? note.content.toLowerCase() : ""; // Check if note.content is defined
+    const searchItem = searchParam ? searchParam.toLowerCase() : ""; // Check if searchParam is defined
+  
+    return title.includes(searchItem) || content.includes(searchItem);
+  });
+  
+
   return (
     <div className="dashboard">
       <InputNote />
       {userData?.notes.length !== 0 ? (
         <div className="grid-container">
-          {userData?.notes.map(function (userObj, index) {
+          {filteredNotes?.map(function (userObj, index) {
             return (
               <div key={userObj._id} className="grid-item">
                 <Note

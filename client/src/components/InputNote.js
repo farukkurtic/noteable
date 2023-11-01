@@ -4,9 +4,20 @@ import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 
+import { useAppContext } from "../AppContext";
+
+import TextField from "@mui/material/TextField";
+
 export default function InputNote() {
 
   const navigate = useNavigate();
+
+  const { searchParam, setSearchParam } = useAppContext();
+
+  const handleSearch = function(event) {
+    let lowercaseSearch = event.target.value.toLowerCase();
+    setSearchParam(lowercaseSearch);
+  }
 
   const [newNote, setNewNote] = useState({noteTitle: "", noteContent: ""});
   const updateNoteField = (fieldName, value) => {
@@ -61,6 +72,14 @@ export default function InputNote() {
       <div className="input-main">
         <input className="noteName" placeholder="Title" value={newNote.noteTitle} onChange={(event) => {updateNoteField("noteTitle", event.target.value)}} />
         <textarea className="noteContent" placeholder="Take a note..." value={newNote.noteContent} onBlur={addNote} onChange={(event) => {updateNoteField("noteContent", event.target.value)}}/>
+        <TextField
+          value={searchParam}
+          onChange={handleSearch}
+          className="search"
+          id="outlined-basic"
+          variant="outlined"
+          label="Search"
+        />
       </div>
       <div className="input-buttons">
         <button className="sign-out btn btn-primary btn-lg" onClick={handleSignOut}><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>

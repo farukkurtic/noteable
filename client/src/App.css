@@ -149,6 +149,8 @@
   animation-delay: 10s;
 }
 
+/* utilities */
+
 * {
   box-sizing: border-box;
 }
@@ -368,6 +370,11 @@ body {
 
 /* input note component */
 
+.search {
+  width: 35%;
+  margin-top: 20px !important;
+}
+
 .inputNote {
   width: 100%;
   margin-top: 30px;
@@ -393,6 +400,7 @@ body {
 
 .input-main {
   width: 60%;
+  text-align: center;
 }
 
 .inputNote input {
