@@ -108,6 +108,7 @@ app.post("/api/notes/:userID", async function(req, res) {
     }
 });
 
+// edit note
 app.post("/api/edit/:userID", async function (req, res) {
     const userId = req.params.userID;
     const { id, title, content } = req.body;
@@ -124,13 +125,18 @@ app.post("/api/edit/:userID", async function (req, res) {
       }
   
       // Ensure that the note object exists before accessing its properties
-      if (note) {
-        note.title = title;
-        note.content = content;
-  
-        await user.save();
-  
-        res.json({ message: "Note updated successfully" });
+      if(note) {
+        if(note.title === title && note.content === content) {
+          res.json(false);
+        } else {
+          note.title = title;
+          note.content = content;
+          note.edited = true;
+
+          await user.save();
+      
+          res.json(true); 
+        }
       } else {
         return res.status(404).json({ message: "Note not found" });
       }
@@ -178,6 +184,77 @@ app.get("/users/:userID", async function(req, res) {
         console.log("Error:", error);
     }
 });
+
+// add label to note
+app.post("/users/label/:userID/:noteID", async function(req, res) {
+  
+  const userID = req.params.userID;
+  const noteID = req.params.noteID;
+  const label = req.body.label;
+
+  try {
+    const user = await User.findById(userID);
+
+    if(!user) {
+      return res.status(404).json({message: "User not found"});
+    } 
+
+    const note = user.notes.id(noteID);
+    if(!note) {
+      res.status(404).json({message: "Note not found"});
+    }
+
+    const isLabelExists = note.labels.includes(label);
+    if(isLabelExists) {
+      res.json({message: "label exists"});
+    } else {
+        if(note && label != "") {
+          note.labels.push(label);
+          await user.save();
+          res.json(true);
+        } else {
+          res.json(false);
+        } 
+    }
+
+  } catch(error) {
+    console.log("Error:", error);
+  }
+
+});
+
+// remove label from note
+app.post("/users/label/remove/:userID/:noteID", async function(req, res) {
+
+  const userId = req.params.userID;
+  const noteId = req.params.noteID;
+  const label = req.body.label;
+
+  try {
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(404).json({ message: "user not found" });
+      return; // Added return to exit the function if user not found
+    }
+
+    const note = user.notes.id(noteId);
+    if (!note) {
+      res.status(404).json({ message: "Note not found" });
+    } else {
+      note.labels = note.labels.filter((labell) => labell !== label);
+      await user.save();
+      res.json(true);
+    }
+
+  } catch (error) {
+    console.log("Error:", error);
+    res.status(500).json({ message: "Internal server error" }); // Added status code for internal server error
+  }
+
+});
+
 
 
 // start the server

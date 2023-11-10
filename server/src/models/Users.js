@@ -10,34 +10,33 @@ const noteSchema = new mongoose.Schema({
         required: true
     },
     createdAt: {
-        type: Date,
-        default: Date.now
-    }
-}, {
-    toJSON: {
-        getters: true, // Enable custom getters when converting to JSON
-    }
-});
+        type: String, // Change the type to String to store it as a formatted string
+        default: () => {
+            const now = new Date();
+            const options = {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            };
+            return new Intl.DateTimeFormat("en-US", options).format(now);
+        }
+    },
+    edited: {
+        type: Boolean,
+    },
+    labels: [String],
 
-// Custom getter for formatting the createdAt date
-noteSchema.path('createdAt').get(function (value) {
-    const options = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    };
-    return new Intl.DateTimeFormat('en-US', options).format(value);
 });
 
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
-        require: true
+        required: true
     },
     lastName: {
         type: String,
-        require: true
-    }, 
+        required: true
+    },
     email: {
         type: String,
         required: true,
@@ -45,10 +44,9 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true,
+        required: true
     },
     notes: [noteSchema]
-
 });
 
 module.exports = mongoose.model("User", userSchema);

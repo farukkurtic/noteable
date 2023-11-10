@@ -8,9 +8,10 @@ export const useAppContext = () => {
 
 export const AppProvider = ({ children }) => {
     const [searchParam, setSearchParam] = useState("");
+    const [selectedLabel, setSelectedLabel] = useState("");
   
     return (
-      <AppContext.Provider value={{ searchParam, setSearchParam }}>
+      <AppContext.Provider value={{ searchParam, setSearchParam, selectedLabel, setSelectedLabel }}>
         {children}
       </AppContext.Provider>
     );

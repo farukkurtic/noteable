@@ -19,6 +19,7 @@ export default function Dashboard(props) {
   const userId = cookies.userID;
 
   const { searchParam } = useAppContext();
+  const {selectedLabel } = useAppContext();
 
   const [userData, setUserData] = useState();
   useEffect(function () {
@@ -39,7 +40,7 @@ export default function Dashboard(props) {
     setSelectedNote({
       id: note._id,
       title: note.title,
-      content: note.content
+      content: note.content,
     });
     setIsModalOpen(true);
   }
@@ -76,11 +77,13 @@ export default function Dashboard(props) {
   }
 
   const filteredNotes = userData?.notes.filter(function(note) {
-    const title = note.title ? note.title.toLowerCase() : ""; // Check if note.title is defined
-    const content = note.content ? note.content.toLowerCase() : ""; // Check if note.content is defined
-    const searchItem = searchParam ? searchParam.toLowerCase() : ""; // Check if searchParam is defined
+    const title = note.title ? note.title.toLowerCase() : ""; 
+    const content = note.content ? note.content.toLowerCase() : ""; 
+    const searchItem = searchParam ? searchParam.toLowerCase() : ""; 
   
-    return title.includes(searchItem) || content.includes(searchItem);
+    const labelFilter = selectedLabel !== "" ? note.labels.includes(selectedLabel) : true;
+    return (title.includes(searchItem) || content.includes(searchItem)) && labelFilter;
+
   });
   
 
@@ -93,9 +96,13 @@ export default function Dashboard(props) {
             return (
               <div key={userObj._id} className="grid-item">
                 <Note
+                  user_id={userId}
+                  note_id={userObj._id}
                   title={userObj.title}
                   content={userObj.content}
                   date={userObj.createdAt}
+                  edited={userObj.edited}
+                  labels={userObj.labels}
                   onTrashClick={() => handleClick(userObj._id)}
                   onModalClick={() => openModal(userObj)}
                 />

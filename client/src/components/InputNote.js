@@ -66,20 +66,20 @@ export default function InputNote() {
   return (
     <div className="inputNote">
       <div className="dev-links">
-        <button className="btn btn-primary btn-lg" onClick={handleSignOut}><i class="fa-brands fa-github"></i> GitHub</button>
-        <button className="btn btn-primary btn-lg" onClick={handleSignOut}><i class="fa-solid fa-globe"></i> Website</button>
+        <button className="btn btn-primary btn-lg" onClick={handleSignOut}><i className="fa-brands fa-github"></i> GitHub</button>
+        <button className="btn btn-primary btn-lg" onClick={handleSignOut}><i className="fa-solid fa-globe"></i> Website</button>
       </div>
       <div className="input-main">
         <input className="noteName" placeholder="Title" value={newNote.noteTitle} onChange={(event) => {updateNoteField("noteTitle", event.target.value)}} />
         <textarea className="noteContent" placeholder="Take a note..." value={newNote.noteContent} onBlur={addNote} onChange={(event) => {updateNoteField("noteContent", event.target.value)}}/>
         <TextField
-          value={searchParam}
-          onChange={handleSearch}
-          className="search"
-          id="outlined-basic"
-          variant="outlined"
-          label="Search"
-        />
+            value={searchParam}
+            onChange={handleSearch}
+            className="search"
+            id="outlined-basic"
+            variant="outlined"
+            label="Search"
+          />
       </div>
       <div className="input-buttons">
         <button className="sign-out btn btn-primary btn-lg" onClick={handleSignOut}><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
