@@ -3,8 +3,6 @@
 - [Technologies Used](#technologies-used)
 - [Installation](#installation)
 - [Database Schema](#database-schema)
-- [Demo](#demo)
-- [Conclusion](#conclusion)
 
 ## Features
 - Create, edit, filter, and delete notes
