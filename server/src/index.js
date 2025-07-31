@@ -17,7 +17,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// check if user exists
 app.get("/auth/check/:email", async function(req, res) {
     const { email } = req.params;
     const user = await User.findOne({email});
@@ -28,7 +27,6 @@ app.get("/auth/check/:email", async function(req, res) {
     }
 });
 
-// registration
 app.post("/auth/register", async function (req, res) {
     const { firstName, lastName, email, password } = req.body;
 
@@ -61,7 +59,6 @@ app.post("/auth/register", async function (req, res) {
     }
 });
 
-// login
 app.post("/auth/login", async function(req, res) {
     const { email, password } = req.body;
 
@@ -87,7 +84,6 @@ app.post("/auth/login", async function(req, res) {
 
 });
 
-// add note 
 app.post("/api/notes/:userID", async function(req, res) {
     const userId = req.params.userID;
     const {noteTitle, noteContent} = req.body;
@@ -108,7 +104,6 @@ app.post("/api/notes/:userID", async function(req, res) {
     }
 });
 
-// edit note
 app.post("/api/edit/:userID", async function (req, res) {
     const userId = req.params.userID;
     const { id, title, content } = req.body;
@@ -119,12 +114,11 @@ app.post("/api/edit/:userID", async function (req, res) {
         return res.status(404).json({ message: "User not found" });
       }
   
-      const note = user.notes.id(id); // Find the note by its _id
+      const note = user.notes.id(id);
       if (!note) {
         return res.status(404).json({ message: "Note not found" });
       }
-  
-      // Ensure that the note object exists before accessing its properties
+        
       if(note) {
         if(note.title === title && note.content === content) {
           res.json(false);
@@ -146,9 +140,6 @@ app.post("/api/edit/:userID", async function (req, res) {
     }
   });
   
-  
-
-// delete note
 app.post("/delete/:userID/:noteID", async function(req, res) {
     const userId = req.params.userID;
     const noteId = req.params.noteID;
@@ -168,7 +159,6 @@ app.post("/delete/:userID/:noteID", async function(req, res) {
     }
 });
 
-// get user data
 app.get("/users/:userID", async function(req, res) {
     const userId = req.params.userID;
 
@@ -185,7 +175,6 @@ app.get("/users/:userID", async function(req, res) {
     }
 });
 
-// add label to note
 app.post("/users/label/:userID/:noteID", async function(req, res) {
   
   const userID = req.params.userID;
@@ -223,7 +212,6 @@ app.post("/users/label/:userID/:noteID", async function(req, res) {
 
 });
 
-// remove label from note
 app.post("/users/label/remove/:userID/:noteID", async function(req, res) {
 
   const userId = req.params.userID;
@@ -236,7 +224,7 @@ app.post("/users/label/remove/:userID/:noteID", async function(req, res) {
 
     if (!user) {
       res.status(404).json({ message: "user not found" });
-      return; // Added return to exit the function if user not found
+      return;
     }
 
     const note = user.notes.id(noteId);
@@ -250,14 +238,11 @@ app.post("/users/label/remove/:userID/:noteID", async function(req, res) {
 
   } catch (error) {
     console.log("Error:", error);
-    res.status(500).json({ message: "Internal server error" }); // Added status code for internal server error
+    res.status(500).json({ message: "Internal server error" });
   }
 
 });
 
-
-
-// start the server
 const port = 3001;
 app.listen(port, function (req, res) {
     console.log("Server listening on port", port);
